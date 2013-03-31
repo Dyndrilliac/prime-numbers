@@ -155,20 +155,19 @@ public final class PrimeNumbers
 		if (choice == JOptionPane.YES_OPTION)
 		{
 			mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), true, false, 
-				true, myActionPerformed, myDrawGUI);
+				myActionPerformed, myDrawGUI);
 		}
 		else if (choice == JOptionPane.NO_OPTION)
 		{
 			mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), false, false, 
-				true, myActionPerformed, myDrawGUI);
+				myActionPerformed, myDrawGUI);
 		}
 		else
 		{
 			return;
 		}
 		
-		mainWindow.drawGUI();
-		mainWindow.setVisible(true);
+		mainWindow.setIconImageByResourceName("icon.png");
 	}
 	
 	private static final void printPrimes(final long numberOfPrimes, final RichTextPane output)
