@@ -19,22 +19,6 @@ import javax.swing.*;
 
 public final class PrimeNumbers
 {
-	private static final void handleInput(final Object... arguments)
-	{
-		ApplicationWindow window = (ApplicationWindow)arguments[1];
-		RichTextPane      output = null;
-		
-		for (int i = 0; i < window.getElements().size(); i++)
-		{
-			if (window.getElements().get(i) instanceof RichTextPane)
-			{
-				output = (RichTextPane)window.getElements().get(i);
-			}
-		}
-		
-		printPrimes(500, output);
-	}
-	
 	public static final void main(final String[] args)
 	{
 		ApplicationWindow mainWindow = null;
@@ -70,36 +54,39 @@ public final class PrimeNumbers
 					}
 				}
 				
-				/*
-					JDK 7 allows string objects as the expression in a switch statement.
-					This generally produces more efficient byte code compared to a chain of if statements.
-					http://docs.oracle.com/javase/7/docs/technotes/guides/language/strings-switch.html
-				*/
-				switch (event.getActionCommand())
+				if (output != null)
 				{
-					case "Clear":
-						
-						output.clear();
-						break;
-						
-					case "Open":
-						
-						output.openFile();
-						break;
-						
-					case "Save":
-						
-						output.saveFile();
-						break;
-						
-					case "Print Prime Numbers":
-						
-						handleInput(arguments);
-						break;
-						
-					default:
-						
-						break;
+					/*
+						JDK 7 allows string objects as the expression in a switch statement.
+						This generally produces more efficient byte code compared to a chain of if statements.
+						http://docs.oracle.com/javase/7/docs/technotes/guides/language/strings-switch.html
+					*/
+					switch (event.getActionCommand())
+					{
+						case "Clear":
+							
+							output.clear();
+							break;
+							
+						case "Open":
+							
+							output.openFile();
+							break;
+							
+						case "Save":
+							
+							output.saveFile();
+							break;
+							
+						case "Print Prime Numbers":
+							
+							printPrimes(500, output);
+							break;
+							
+						default:
+							
+							break;
+					}
 				}
 			}
 		};
