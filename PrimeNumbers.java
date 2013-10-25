@@ -12,17 +12,33 @@
 import api.gui.*;
 import api.util.*;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public final class PrimeNumbers
 {
+	private static boolean debugMode = false;
+	
 	public static final void main(final String[] args)
 	{
 		ApplicationWindow mainWindow = null;
-		int choice = Support.promptDebugMode(mainWindow);
+		int               choice     = Support.promptDebugMode(mainWindow);
+		
+		debugMode = (choice == JOptionPane.YES_OPTION);
 		
 		// Define a self-contained ActionListener event handler.
 		EventHandler myActionPerformed = new EventHandler()
@@ -139,20 +155,8 @@ public final class PrimeNumbers
 			}
 		};
 		
-		if (choice == JOptionPane.YES_OPTION)
-		{
-			mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), true, false, 
-				myActionPerformed, myDrawGUI);
-		}
-		else if (choice == JOptionPane.NO_OPTION)
-		{
-			mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), false, false, 
-				myActionPerformed, myDrawGUI);
-		}
-		else
-		{
-			return;
-		}
+		mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), debugMode, false, 
+			myActionPerformed, myDrawGUI);
 		
 		mainWindow.setIconImageByResourceName("icon.png");
 	}
