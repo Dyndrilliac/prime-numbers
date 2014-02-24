@@ -28,9 +28,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 public final class PrimeNumbers
 {
+	private final static Font textFont = new Font("Lucida Console", Font.PLAIN, 14);
+	
 	private static boolean debugMode = false;
 	
 	public static final void main(final String[] args)
@@ -128,10 +131,14 @@ public final class PrimeNumbers
 				JMenuItem         clearOption = new JMenuItem("Clear");
 				JMenuItem         openOption  = new JMenuItem("Open");
 				JMenuItem         saveOption  = new JMenuItem("Save");
-				Font              outputFont  = new Font("Lucida Console", Font.PLAIN, 14);
-				RichTextPane      outputBox   = new RichTextPane((Component)window, true, window.isDebugging(), outputFont);
+				RichTextPane      outputBox   = new RichTextPane((Component)window, true, window.isDebugging(), textFont);
 				JButton           button      = new JButton("Print Prime Numbers");
 				
+				menuBar.setFont(textFont);
+				fileMenu.setFont(textFont);
+				clearOption.setFont(textFont);
+				openOption.setFont(textFont);
+				saveOption.setFont(textFont);
 				contentPane.setLayout(new BorderLayout());
 				clearOption.addActionListener(window);
 				fileMenu.add(clearOption);
@@ -142,11 +149,16 @@ public final class PrimeNumbers
 				menuBar.add(fileMenu);
 				window.setJMenuBar(menuBar);
 				
+				openOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.Event.CTRL_MASK));
+				saveOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
+				clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, java.awt.Event.CTRL_MASK));
+				
 				JScrollPane outputPanel = new JScrollPane(outputBox);
 				JPanel      inputPanel  = new JPanel();
 				
 				inputPanel.setLayout(new FlowLayout());
-				button.setPreferredSize(new Dimension(175, 20));
+				button.setFont(textFont);
+				button.setPreferredSize(new Dimension(200, 20));
 				button.addActionListener(window);
 				inputPanel.add(button);
 				contentPane.add(outputPanel, BorderLayout.CENTER);
