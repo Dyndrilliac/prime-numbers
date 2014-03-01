@@ -149,9 +149,13 @@ public final class PrimeNumbers
 				menuBar.add(fileMenu);
 				window.setJMenuBar(menuBar);
 				
+				fileMenu.setMnemonic('F');
 				openOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.Event.CTRL_MASK));
+				openOption.setMnemonic('O');
 				saveOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
-				clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, java.awt.Event.CTRL_MASK));
+				saveOption.setMnemonic('S');
+				clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.Event.CTRL_MASK));
+				clearOption.setMnemonic('C');
 				
 				JScrollPane outputPanel = new JScrollPane(outputBox);
 				JPanel      inputPanel  = new JPanel();
