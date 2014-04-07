@@ -3,18 +3,19 @@
 	Author: Matthew Boyette
 	Date:   2/21/2012
 	
-	This application generates the first 'n' prime numbers and displays them to the user. The method used to test 
-	for primality is fairly efficient but will naturally pale in comparison to industry standard libraries optimized 
-	for this task. This is merely proof of concept code. It will also approximate the amount of time in seconds that 
+	This application generates the first 'n' prime numbers and displays them to the user. The method used to test
+	for primality is fairly efficient but will naturally pale in comparison to industry standard libraries optimized
+	for this task. This is merely proof of concept code. It will also approximate the amount of time in seconds that
 	it took to generate the list.
 */
 
-import api.gui.*;
-import api.util.*;
+import api.gui.ApplicationWindow;
+import api.gui.RichTextPane;
+import api.util.EventHandler;
+import api.util.Support;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -30,22 +31,47 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 
-public final class PrimeNumbers
+public class PrimeNumbers
 {
-	private final static Font textFont = new Font("Lucida Console", Font.PLAIN, 14);
+	protected final static Font	textFont	= new Font("Lucida Console", Font.PLAIN, 14);
 	
-	private static boolean debugMode = false;
-	
-	public static final void main(final String[] args)
+	public final static void main(final String[] args)
 	{
-		ApplicationWindow mainWindow = null;
-		int               choice     = Support.promptDebugMode(mainWindow);
+		new PrimeNumbers(500);
+	}
+	
+	public final static void printPrimes(final long numberOfPrimes, final RichTextPane output)
+	{
+		long startTime = System.currentTimeMillis();
 		
-		debugMode = (choice == JOptionPane.YES_OPTION);
+		for (long i = 0, j = 1; j <= numberOfPrimes; i++)
+		{
+			if (Support.isPrime(i))
+			{
+				output.append(Color.BLACK, Color.WHITE, "[" + Support.getDateTimeStamp() + "]: ",
+					Color.BLUE, Color.WHITE, "Prime #" + (j) + ": " + i + "\n");
+				j++;
+			}
+		}
+		
+		long stopTime = System.currentTimeMillis();
+		output.append(Color.BLACK, Color.WHITE, "\n[" + Support.getDateTimeStamp() + "]: ",
+			Color.BLUE, Color.WHITE, "Execution time (in seconds): " + ((stopTime - startTime) / 1000.0) + ".\n\n");
+	}
+	
+	private boolean				isDebugging	= false;
+	private int					numPrimes	= 0;
+	private ApplicationWindow	window		= null;
+	
+	public PrimeNumbers(final int numPrimes)
+	{
+		this.setDebugging((Support.promptDebugMode(this.getWindow()) == JOptionPane.YES_OPTION));
+		this.setNumPrimes(numPrimes);
 		
 		// Define a self-contained ActionListener event handler.
-		EventHandler myActionPerformed = new EventHandler()
+		EventHandler myActionPerformed = new EventHandler(this)
 		{
+			@Override
 			public final void run(final Object... arguments) throws IllegalArgumentException
 			{
 				if ((arguments.length <= 1) || (arguments.length > 2))
@@ -61,9 +87,10 @@ public final class PrimeNumbers
 					throw new IllegalArgumentException("myActionPerformed Error : argument[1] is of incorrect type.");
 				}
 				
-				ActionEvent       event  = (ActionEvent)arguments[0];
-				ApplicationWindow window = (ApplicationWindow)arguments[1];
-				RichTextPane      output = null;
+				ActionEvent			event	= (ActionEvent)arguments[0];
+				ApplicationWindow	window	= (ApplicationWindow)arguments[1];
+				PrimeNumbers		parent	= ((PrimeNumbers)this.parent);
+				RichTextPane		output	= null;
 				
 				for (int i = 0; i < window.getElements().size(); i++)
 				{
@@ -86,22 +113,22 @@ public final class PrimeNumbers
 							
 							output.clear();
 							break;
-							
+						
 						case "Open":
 							
-							output.openFile();
+							output.openOrSaveFile(true);
 							break;
-							
+						
 						case "Save":
 							
-							output.saveFile();
+							output.openOrSaveFile(false);
 							break;
-							
+						
 						case "Print Prime Numbers":
 							
-							printPrimes(500, output);
+							PrimeNumbers.printPrimes(parent.getNumPrimes(), output);
 							break;
-							
+						
 						default:
 							
 							break;
@@ -111,8 +138,9 @@ public final class PrimeNumbers
 		};
 		
 		// Define a self-contained interface construction event handler.
-		EventHandler myDrawGUI = new EventHandler()
+		EventHandler myDrawGUI = new EventHandler(this)
 		{
+			@Override
 			public final void run(final Object... arguments) throws IllegalArgumentException
 			{
 				if (arguments.length <= 0)
@@ -124,21 +152,21 @@ public final class PrimeNumbers
 					throw new IllegalArgumentException("myDrawGUI Error : argument[0] is of incorrect type.");
 				}
 				
-				ApplicationWindow window      = (ApplicationWindow)arguments[0];
-				Container         contentPane = window.getContentPane();
-				JMenuBar          menuBar     = new JMenuBar();
-				JMenu             fileMenu    = new JMenu("File");
-				JMenuItem         clearOption = new JMenuItem("Clear");
-				JMenuItem         openOption  = new JMenuItem("Open");
-				JMenuItem         saveOption  = new JMenuItem("Save");
-				RichTextPane      outputBox   = new RichTextPane((Component)window, true, window.isDebugging(), textFont);
-				JButton           button      = new JButton("Print Prime Numbers");
+				ApplicationWindow	window		= (ApplicationWindow)arguments[0];
+				Container			contentPane	= window.getContentPane();
+				JMenuBar			menuBar		= new JMenuBar();
+				JMenu				fileMenu	= new JMenu("File");
+				JMenuItem			clearOption	= new JMenuItem("Clear");
+				JMenuItem			openOption	= new JMenuItem("Open");
+				JMenuItem			saveOption	= new JMenuItem("Save");
+				RichTextPane		outputBox	= new RichTextPane(window, true, window.isDebugging(), PrimeNumbers.textFont);
+				JButton				button		= new JButton("Print Prime Numbers");
 				
-				menuBar.setFont(textFont);
-				fileMenu.setFont(textFont);
-				clearOption.setFont(textFont);
-				openOption.setFont(textFont);
-				saveOption.setFont(textFont);
+				menuBar.setFont(PrimeNumbers.textFont);
+				fileMenu.setFont(PrimeNumbers.textFont);
+				clearOption.setFont(PrimeNumbers.textFont);
+				openOption.setFont(PrimeNumbers.textFont);
+				saveOption.setFont(PrimeNumbers.textFont);
 				contentPane.setLayout(new BorderLayout());
 				clearOption.addActionListener(window);
 				fileMenu.add(clearOption);
@@ -157,11 +185,11 @@ public final class PrimeNumbers
 				clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.Event.CTRL_MASK));
 				clearOption.setMnemonic('C');
 				
-				JScrollPane outputPanel = new JScrollPane(outputBox);
-				JPanel      inputPanel  = new JPanel();
+				JScrollPane	outputPanel		= new JScrollPane(outputBox);
+				JPanel		inputPanel		= new JPanel();
 				
 				inputPanel.setLayout(new FlowLayout());
-				button.setFont(textFont);
+				button.setFont(PrimeNumbers.textFont);
 				button.setPreferredSize(new Dimension(200, 20));
 				button.addActionListener(window);
 				inputPanel.add(button);
@@ -171,28 +199,37 @@ public final class PrimeNumbers
 			}
 		};
 		
-		mainWindow = new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), debugMode, false, 
-			myActionPerformed, myDrawGUI);
-		
-		mainWindow.setIconImageByResourceName("icon.png");
+		this.setWindow(new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), this.isDebugging(), false, myActionPerformed, myDrawGUI));
+		this.getWindow().setIconImageByResourceName("icon.png");
 	}
 	
-	private static final void printPrimes(final long numberOfPrimes, final RichTextPane output)
+	public final int getNumPrimes()
 	{
-		long startTime = System.currentTimeMillis();
-
-		for (long i = 0, j = 1; j <= numberOfPrimes; i++)
-		{
-			if (Support.isPrime(i))
-			{
-				output.append(Color.BLACK, Color.WHITE, "[" + Support.getDateTimeStamp() + "]: ", 
-					Color.BLUE, Color.WHITE, "Prime #" + (j) + ": " + i + "\n");
-				j++;
-			}
-		}
-
-		long stopTime = System.currentTimeMillis();
-		output.append(Color.BLACK, Color.WHITE, "\n[" + Support.getDateTimeStamp() + "]: ", 
-			Color.BLUE, Color.WHITE, "Execution time (in seconds): " + ((double)(stopTime - startTime) / 1000.0) + ".\n\n");
+		return this.numPrimes;
+	}
+	
+	public final ApplicationWindow getWindow()
+	{
+		return this.window;
+	}
+	
+	public final boolean isDebugging()
+	{
+		return this.isDebugging;
+	}
+	
+	protected final void setDebugging(final boolean isDebugging)
+	{
+		this.isDebugging = isDebugging;
+	}
+	
+	protected final void setNumPrimes(final int numPrimes)
+	{
+		this.numPrimes = numPrimes;
+	}
+	
+	protected final void setWindow(final ApplicationWindow window)
+	{
+		this.window = window;
 	}
 }
