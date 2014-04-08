@@ -26,7 +26,6 @@ import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
@@ -37,7 +36,7 @@ public class PrimeNumbers
 	
 	public final static void main(final String[] args)
 	{
-		new PrimeNumbers(500);
+		new PrimeNumbers();
 	}
 	
 	public final static void printPrimes(final long numberOfPrimes, final RichTextPane output)
@@ -60,13 +59,11 @@ public class PrimeNumbers
 	}
 	
 	private boolean				isDebugging	= false;
-	private int					numPrimes	= 0;
 	private ApplicationWindow	window		= null;
 	
-	public PrimeNumbers(final int numPrimes)
+	public PrimeNumbers()
 	{
-		this.setDebugging((Support.promptDebugMode(this.getWindow()) == JOptionPane.YES_OPTION));
-		this.setNumPrimes(numPrimes);
+		this.setDebugging(Support.promptDebugMode(this.getWindow()));
 		
 		// Define a self-contained ActionListener event handler.
 		EventHandler myActionPerformed = new EventHandler(this)
@@ -126,7 +123,11 @@ public class PrimeNumbers
 						
 						case "Print Prime Numbers":
 							
-							PrimeNumbers.printPrimes(parent.getNumPrimes(), output);
+							PrimeNumbers.printPrimes(Support.getIntegerInputString(parent.getWindow(),
+								"What value to use for 'n'?\n\n" +
+								"Note: 'n' represents the upper bound for the reporting of prime numbers.\n" +
+								"Therefore, if 'n' is 5 for example, then the program will report the first 5 prime numbers.",
+								"Set 'n'"), output);
 							break;
 						
 						default:
@@ -203,11 +204,6 @@ public class PrimeNumbers
 		this.getWindow().setIconImageByResourceName("icon.png");
 	}
 	
-	public final int getNumPrimes()
-	{
-		return this.numPrimes;
-	}
-	
 	public final ApplicationWindow getWindow()
 	{
 		return this.window;
@@ -221,11 +217,6 @@ public class PrimeNumbers
 	protected final void setDebugging(final boolean isDebugging)
 	{
 		this.isDebugging = isDebugging;
-	}
-	
-	protected final void setNumPrimes(final int numPrimes)
-	{
-		this.numPrimes = numPrimes;
 	}
 	
 	protected final void setWindow(final ApplicationWindow window)
