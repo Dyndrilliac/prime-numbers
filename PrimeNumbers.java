@@ -14,12 +14,12 @@ import api.gui.RichTextPane;
 import api.util.EventHandler;
 import api.util.Support;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
@@ -32,11 +32,9 @@ import javax.swing.KeyStroke;
 
 public class PrimeNumbers
 {
-	protected final static Font	textFont	= new Font("Lucida Console", Font.PLAIN, 14);
-	
 	public final static void main(final String[] args)
 	{
-		new PrimeNumbers();
+		new PrimeNumbers(args);
 	}
 	
 	public final static void printPrimes(final long numberOfPrimes, final RichTextPane output)
@@ -59,68 +57,46 @@ public class PrimeNumbers
 	}
 	
 	private boolean				isDebugging	= false;
+	private RichTextPane		output		= null;
 	private ApplicationWindow	window		= null;
 	
-	public PrimeNumbers()
+	public PrimeNumbers(final String[] args)
 	{
 		this.setDebugging(Support.promptDebugMode(this.getWindow()));
 		
 		// Define a self-contained ActionListener event handler.
-		EventHandler myActionPerformed = new EventHandler(this)
+		EventHandler<PrimeNumbers> myActionPerformed = new EventHandler<PrimeNumbers>(this)
 		{
-			private final static long	serialVersionUID	= 1L;
+			private final static long serialVersionUID = 1L;
 
 			@Override
-			public final void run(final Object... arguments) throws IllegalArgumentException
+			public final void run(final AWTEvent event)
 			{
-				if ((arguments.length <= 1) || (arguments.length > 2))
-				{
-					throw new IllegalArgumentException("myActionPerformed Error : incorrect number of arguments.");
-				}
-				else if (!(arguments[0] instanceof ActionEvent))
-				{
-					throw new IllegalArgumentException("myActionPerformed Error : argument[0] is of incorrect type.");
-				}
-				else if (!(arguments[1] instanceof ApplicationWindow))
-				{
-					throw new IllegalArgumentException("myActionPerformed Error : argument[1] is of incorrect type.");
-				}
+				ActionEvent		actionEvent	= (ActionEvent)event;
+				PrimeNumbers	parent		= this.getParent();
 				
-				ActionEvent			event	= (ActionEvent)arguments[0];
-				ApplicationWindow	window	= (ApplicationWindow)arguments[1];
-				PrimeNumbers		parent	= ((PrimeNumbers)this.parent);
-				RichTextPane		output	= null;
-				
-				for (int i = 0; i < window.getElements().size(); i++)
-				{
-					if (window.getElements().get(i) instanceof RichTextPane)
-					{
-						output = (RichTextPane)window.getElements().get(i);
-					}
-				}
-				
-				if (output != null)
+				if (parent.getOutput() != null)
 				{
 					/*
 						JDK 7 allows string objects as the expression in a switch statement.
 						This generally produces more efficient byte code compared to a chain of if statements.
 						http://docs.oracle.com/javase/7/docs/technotes/guides/language/strings-switch.html
 					*/
-					switch (event.getActionCommand())
+					switch (actionEvent.getActionCommand())
 					{
 						case "Clear":
 							
-							output.clear();
+							parent.getOutput().clear();
 							break;
 						
 						case "Open":
 							
-							output.openOrSaveFile(true);
+							parent.getOutput().openOrSaveFile(true);
 							break;
 						
 						case "Save":
 							
-							output.openOrSaveFile(false);
+							parent.getOutput().openOrSaveFile(false);
 							break;
 						
 						case "Print Prime Numbers":
@@ -129,7 +105,7 @@ public class PrimeNumbers
 								"What value to use for 'n'?\n\n" +
 								"Note: 'n' represents the upper bound for the reporting of prime numbers.\n" +
 								"Therefore, if 'n' is 5 for example, then the program will report the first 5 prime numbers.",
-								"Set 'n'"), output);
+								"Set 'n'"), parent.getOutput());
 							break;
 						
 						default:
@@ -141,37 +117,30 @@ public class PrimeNumbers
 		};
 		
 		// Define a self-contained interface construction event handler.
-		EventHandler myDrawGUI = new EventHandler(this)
+		EventHandler<PrimeNumbers> myDrawGUI = new EventHandler<PrimeNumbers>(this)
 		{
-			private final static long	serialVersionUID	= 1L;
+			private final static long serialVersionUID = 1L;
 
 			@Override
-			public final void run(final Object... arguments) throws IllegalArgumentException
+			public final void run(final ApplicationWindow window)
 			{
-				if (arguments.length <= 0)
-				{
-					throw new IllegalArgumentException("myDrawGUI Error : incorrect number of arguments.");
-				}
-				else if (!(arguments[0] instanceof ApplicationWindow))
-				{
-					throw new IllegalArgumentException("myDrawGUI Error : argument[0] is of incorrect type.");
-				}
+				PrimeNumbers	parent		= this.getParent();
+				Container		contentPane	= window.getContentPane();
+				JMenuBar		menuBar		= new JMenuBar();
+				JMenu			fileMenu 	= new JMenu("File");
+				JMenuItem		clearOption	= new JMenuItem("Clear");
+				JMenuItem		openOption	= new JMenuItem("Open");
+				JMenuItem		saveOption	= new JMenuItem("Save");
+				RichTextPane	outputBox	= new RichTextPane(window, true, window.isDebugging());
+				JButton			button		= new JButton("Print Prime Numbers");
+				JScrollPane		outputPanel	= new JScrollPane(outputBox);
+				JPanel			inputPanel	= new JPanel();
 				
-				ApplicationWindow	window		= (ApplicationWindow)arguments[0];
-				Container			contentPane	= window.getContentPane();
-				JMenuBar			menuBar		= new JMenuBar();
-				JMenu				fileMenu	= new JMenu("File");
-				JMenuItem			clearOption	= new JMenuItem("Clear");
-				JMenuItem			openOption	= new JMenuItem("Open");
-				JMenuItem			saveOption	= new JMenuItem("Save");
-				RichTextPane		outputBox	= new RichTextPane(window, true, window.isDebugging(), PrimeNumbers.textFont);
-				JButton				button		= new JButton("Print Prime Numbers");
-				
-				menuBar.setFont(PrimeNumbers.textFont);
-				fileMenu.setFont(PrimeNumbers.textFont);
-				clearOption.setFont(PrimeNumbers.textFont);
-				openOption.setFont(PrimeNumbers.textFont);
-				saveOption.setFont(PrimeNumbers.textFont);
+				menuBar.setFont(Support.DEFAULT_TEXT_FONT);
+				fileMenu.setFont(Support.DEFAULT_TEXT_FONT);
+				clearOption.setFont(Support.DEFAULT_TEXT_FONT);
+				openOption.setFont(Support.DEFAULT_TEXT_FONT);
+				saveOption.setFont(Support.DEFAULT_TEXT_FONT);
 				contentPane.setLayout(new BorderLayout());
 				clearOption.addActionListener(window);
 				fileMenu.add(clearOption);
@@ -181,7 +150,6 @@ public class PrimeNumbers
 				fileMenu.add(saveOption);
 				menuBar.add(fileMenu);
 				window.setJMenuBar(menuBar);
-				
 				fileMenu.setMnemonic('F');
 				openOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.Event.CTRL_MASK));
 				openOption.setMnemonic('O');
@@ -189,23 +157,23 @@ public class PrimeNumbers
 				saveOption.setMnemonic('S');
 				clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.Event.CTRL_MASK));
 				clearOption.setMnemonic('C');
-				
-				JScrollPane	outputPanel		= new JScrollPane(outputBox);
-				JPanel		inputPanel		= new JPanel();
-				
 				inputPanel.setLayout(new FlowLayout());
-				button.setFont(PrimeNumbers.textFont);
-				button.setPreferredSize(new Dimension(200, 20));
+				button.setFont(Support.DEFAULT_TEXT_FONT);
 				button.addActionListener(window);
 				inputPanel.add(button);
 				contentPane.add(outputPanel, BorderLayout.CENTER);
 				contentPane.add(inputPanel, BorderLayout.SOUTH);
-				window.getElements().add(outputBox);
+				parent.setOutput(outputBox);
 			}
 		};
 		
 		this.setWindow(new ApplicationWindow(null, "Prime Numbers Application", new Dimension(800, 600), this.isDebugging(), false, myActionPerformed, myDrawGUI));
 		this.getWindow().setIconImageByResourceName("icon.png");
+	}
+	
+	public final RichTextPane getOutput()
+	{
+		return this.output;
 	}
 	
 	public final ApplicationWindow getWindow()
@@ -221,6 +189,11 @@ public class PrimeNumbers
 	protected final void setDebugging(final boolean isDebugging)
 	{
 		this.isDebugging = isDebugging;
+	}
+	
+	protected final void setOutput(final RichTextPane output)
+	{
+		this.output = output;
 	}
 	
 	protected final void setWindow(final ApplicationWindow window)
