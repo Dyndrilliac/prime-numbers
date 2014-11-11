@@ -12,6 +12,7 @@
 import api.gui.ApplicationWindow;
 import api.gui.RichTextPane;
 import api.util.EventHandler;
+import api.util.Mathematics;
 import api.util.Support;
 
 import java.awt.AWTEvent;
@@ -43,7 +44,7 @@ public class PrimeNumbers
 		
 		for (long i = 0, j = 1; j <= numberOfPrimes; i++)
 		{
-			if (Support.isPrime(i))
+			if (Mathematics.isPrime(i))
 			{
 				output.append(Color.BLACK, Color.WHITE, "[" + Support.getDateTimeStamp() + "]: ",
 					Color.BLUE, Color.WHITE, "Prime #" + (j) + ": " + i + "\n");
