@@ -104,8 +104,8 @@ public class PrimeNumbers
 							
 							PrimeNumbers.printPrimes(Support.getIntegerInputString(parent.getWindow(),
 								"What value to use for 'n'?\n\n" +
-									"Note: 'n' represents the upper bound for the reporting of prime numbers.\n" +
-									"Therefore, if 'n' is 5 for example, then the program will report the first 5 prime numbers.",
+								"Note: 'n' represents the upper bound for the reporting of prime numbers.\n" +
+								"Therefore, if 'n' is 5 for example, then the program will report the first 5 prime numbers.",
 								"Set 'n'"), parent.getOutput());
 							break;
 						
