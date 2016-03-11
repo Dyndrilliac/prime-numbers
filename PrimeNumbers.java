@@ -46,10 +46,10 @@ public class PrimeNumbers
         {
             if (Mathematics.isPrime(i))
             {
-                output.append(Color.BLACK, Color.WHITE, "[" + Support.getDateTimeStamp() + "]: ", Color.BLUE, Color.WHITE, "Prime #" + (j)
-                    + ": "
-                    + i
-                    + "\n");
+                output.append(Color.BLACK, Color.WHITE, "[" + Support.getDateTimeStamp() + "]: ", Color.BLUE, Color.WHITE, "Prime #" + (j) +
+                    ": " +
+                    i +
+                    "\n");
                 j++;
             }
         }
@@ -71,6 +71,7 @@ public class PrimeNumbers
         this.setDebugging(Support.promptDebugMode(this.getWindow()));
         
         // Define a self-contained ActionListener event handler.
+        // @formatter:off
         EventHandler<PrimeNumbers> myActionPerformed = new EventHandler<PrimeNumbers>(this)
         {
             private final static long serialVersionUID = 1L;
@@ -179,6 +180,7 @@ public class PrimeNumbers
             myActionPerformed,
             myDrawGUI));
         this.getWindow().setIconImageByResourceName("icon.png");
+        // @formatter:on
     }
     
     public final RichTextPane getOutput()
