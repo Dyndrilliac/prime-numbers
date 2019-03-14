@@ -15,7 +15,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -23,13 +22,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-
 import api.gui.swing.ApplicationWindow;
 import api.gui.swing.RichTextPane;
 import api.util.EventHandler;
 import api.util.Mathematics;
 import api.util.Support;
-import api.util.stdlib.Stopwatch;
+import edu.princeton.cs.introcs.Stopwatch;
 
 public class PrimeNumbers
 {
@@ -156,11 +154,11 @@ public class PrimeNumbers
                 menuBar.add(fileMenu);
                 window.setJMenuBar(menuBar);
                 fileMenu.setMnemonic('F');
-                openOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.Event.CTRL_MASK));
+                openOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.KeyEvent.CTRL_DOWN_MASK));
                 openOption.setMnemonic('O');
-                saveOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
+                saveOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.KeyEvent.CTRL_DOWN_MASK));
                 saveOption.setMnemonic('S');
-                clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.Event.CTRL_MASK));
+                clearOption.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.KeyEvent.CTRL_DOWN_MASK));
                 clearOption.setMnemonic('C');
                 inputPanel.setLayout(new FlowLayout());
                 button.setFont(Support.DEFAULT_TEXT_FONT);
